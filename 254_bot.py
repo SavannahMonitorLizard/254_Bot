@@ -11,9 +11,7 @@ assert dominance
 
 blessedTeams = ["254", "118", "1323"]
 teams = ["33", "118", "148", "254", "330", "341", "930", "971", "973", "1114", "1155", "1323", "1678", "1986", "2056", "2767", "2910", "5160"]
-# botCommands = ["!countdown <insert event>", "!help", "!info", "!teaminfo <team>"]
 teamsHelp = ", ".join(teams)
-# commandsHelp = "\n\t- ".join(botCommands)
 information = {"Version": "2.1.0", "Teams": teamsHelp}
 
 bot = commands.Bot(command_prefix='!', description="Bot commands")
@@ -32,14 +30,6 @@ async def countdown(ctx, event):
     else:
         embed = discord.Embed(title='Events', description="Wake\nECU\nPembroke\nAsheville\nGuilford", color=0x00ff00)
     await ctx.send(embed=embed)
-
-# @bot.command(name="info", description="Some things arent printed by help")
-# async def info(ctx):
-#     for k, v in information.items():
-#         response = ""
-#         response += f"{k}:\n\t- {v}"
-#     response += "\nRobot Bot is maintained by Monitor Lizard#0355"
-#     await ctx.send(response)
 
 @bot.command(name='help', description="Get info on commands")
 async def help(ctx):
@@ -114,7 +104,6 @@ async def teaminfo(ctx, team):
     teamsinfo = {}
     response = requests.get(f'https://www.thebluealliance.com/api/v3/team/frc{team}', headers={"X-TBA-Auth-Key": authKey}).json()
     teamsinfo = response
-    # sendingMessage = "Team %s, %s, AKA %s, from %s, %s, %s, %s%s%s%s\nWebsite: %s\nTheir rookie year was %s%s"%(teamsinfo['team_number'], teamsinfo['nickname'], teamsinfo['name'], teamsinfo['city'], teamsinfo['state_prov'], teamsinfo['country'], (teamsinfo['postal_code'] if teamsinfo['postal_code'] != None else ""), ("\nAddress: " + teamsinfo['address'] if teamsinfo['address'] != None else ""), ("\nLatitude: " + teamsinfo['lat'] if teamsinfo['lat'] != None else ""), (", Longitude: " + teamsinfo['lng'] if teamsinfo['lng'] != None else ""), teamsinfo['website'],teamsinfo['rookie_year'],("\nMotto: " + teamsinfo['motto'] if teamsinfo['motto'] != None else ""))
     embed = discord.Embed(title="Team", description=team, color=0x00ff00)
     embed.add_field(name="Name", value=f"{teamsinfo['nickname']}", inline=False)
     embed.add_field(name='Location', value="%s, %s, %s, %s%s%s%s"%(teamsinfo['city'], teamsinfo['state_prov'], teamsinfo['country'], (teamsinfo['postal_code'] if teamsinfo['postal_code'] != None else ""), ("\nAddress: " + teamsinfo['address'] if teamsinfo['address'] != None else ""), ("\nLatitude: " + teamsinfo['lat'] if teamsinfo['lat'] != None else ""), (", Longitude: " + teamsinfo['lng'] if teamsinfo['lng'] != None else "")), inline=False)
@@ -144,26 +133,8 @@ async def robotinfo(ctx, team, year=None):
         robotName = 'No robot for given year'
 
     embed = discord.Embed(title=team, description=f'Here is some info on {team}s {year} robot', color=0x00ff00)
-    # try:
     embed.add_field(name='Robot name', value=robotName, inline=False)
-    # except UnboundLocalError:
-    #     embed.add_field(name='No robot for given year', value='', inline=False)
     await ctx.send(embed=embed)
-
-# @bot.command(name="githubregister", description="register your github account")
-# async def githubregister(ctx, name):
-#     if ctx.guild.id == 359482017093779456 or ctx.guild.id == 523962430179770369:
-#         allAccounts = {}
-#         userID = ctx.message.author.id
-#         userID = str(userID)
-#         with open('githubregistration.txt') as json_file:
-#             allAccounts = json.load(json_file)
-#         if userID not in allAccounts.keys():
-#             allAccounts[userID] = allAccounts.get(userID, [])
-#         allAccounts[userID].append(name)
-#         with open('githubregistration.txt', 'w') as outfile:
-#             json.dump(allAccounts, outfile)
-#         await ctx.send('Account registered')
             
 @bot.event
 async def on_message(message):
@@ -180,13 +151,11 @@ async def on_message(message):
             possibleImages = getPossibleImages()
             embed = discord.Embed(title="It is not a blessed time...", description='try looking at this instead :)', color=0x00ff00)
             embed.set_image(url=random.choice(possibleImages[message.content]))
-            # response = f"It is not a blessed time, try looking at this instead, \n{random.choice(possibleImages[message.content])}"
             await message.channel.send(embed=embed)
     elif message.content in teams:
         possibleImages = getPossibleImages()
         embed = discord.Embed(title=f"Here is an image of {message.content}s robot", description='', color=0x00ff00)
         embed.set_image(url=random.choice(possibleImages[message.content]))
-        # response = f"Here is a picture of {message.content}:\n{random.choice(possibleImages[message.content])}"
         await message.channel.send(embed=embed)
     else:
         pass
@@ -203,75 +172,6 @@ async def on_message(message):
         for robot in response:
             embed.add_field(name=f"{robot['year']}", value=robot['robot_name'])
         await message.channel.send(embed=embed)
-
-        # try:
-        #     for robot in response:
-        #         rInfo.append(robot['year'])
-        # except (IndexError, KeyError):
-        #     pass
-        # try:
-        #     imageExists = False
-        #     year = random.choice(rInfo)
-        #     media = requests.get(f'https://www.thebluealliance.com/api/v3/team/frc{message.content}/media/{year}', headers={"X-TBA-Auth-Key": authKey}).json()
-        #     robotImages = []
-        #     noImage = "No image available"
-
-        #     for dictionary in media:
-        #         if dictionary['type'] == ('imgur'):
-        #             robotImages.append(dictionary['direct_url'])
-        #             imageExists = True
-
-        #     # while not imageExists:
-        #     #     year = random.choice(rInfo)
-        #     #     for dictionary in media:
-        #     #         if dictionary['type'] == ('imgur'):
-        #     #             robotImages.append(dictionary['direct_url'])
-        #     #             imageExists = True
-
-        #     #     counter = 0
-        #     #     counter+= 1
-        #     #     if counter > 15:
-        #     #         break
-
-        #     if robotImages != []:
-        #         imageLink = random.choice(robotImages)
-        #     else:
-        #         imageLink = None
-        # except (KeyError, UnboundLocalError):
-        #     pass
-        # try:
-        #     # sendingMessage = imageLink if imageExists else noImage
-        #     # sendingMessage = f"Team: {rInfo['team_key']}\nYear: {rInfo['year']} \nRobot name: {rInfo['robot_name']}\nHere is an image of {message.content}s robot:\n{imageLink if imageExists else noImage}"
-        #     if imageExists:
-        #         title = f"Here is an image of {message.content}s robot"
-        #     elif noImage:
-        #         title = f"No image available"
-        #     embed = discord.Embed(title=title, description='', color=0x00ff00)
-        #     if imageLink != None:
-        #         embed.set_image(url=imageLink)
-        #     else:
-        #         embed.add_field(name='No image available', value='', inline=False)
-        # except (KeyError, UnboundLocalError):
-        #     pass
-        # try:
-        #     await message.channel.send(embed=embed)
-        # except UnboundLocalError:
-        #     pass
-
-# async def timer_function():
-#     t = datetime.datetime.now()
-#     currentHour, currentMinute = t.hour, t.minute
-#     while True:
-#         if currentHour != 15 or currentMinute != 15:
-#             time.sleep(1)
-#             continue
-#         response = notifyTeam()
-#         channel = bot.get_channel(431991774962122752)
-#         await channel.send(response)
-        
-# @bot.event
-# async def on_ready():
-#    asyncio.run_coroutine_threadsafe(timer_function(), bot.loop)
 
 @bot.event
 async def on_ready():
